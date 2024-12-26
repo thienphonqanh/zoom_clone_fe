@@ -66,8 +66,7 @@ export function getDecodedToken(token: string): MyJwtPayload {
 export function formatDateTime(time: Date | string | undefined) {
   if (!time) return { date: '', time: '' }
   const dateObj = typeof time === 'string' ? new Date(time) : time
-  // UTC + 7
-  dateObj.setHours(dateObj.getHours() + 7)
+  dateObj.setHours(dateObj.getHours())
   const day = dateObj.getUTCDate()
   const month = dateObj.getUTCMonth() + 1 // Tháng bắt đầu từ 0
   const year = dateObj.getUTCFullYear()

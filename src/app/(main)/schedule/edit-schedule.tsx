@@ -23,13 +23,13 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-import moment from 'moment'
+// import moment from 'moment'
 import { useGetAllScheduleQuery, useGetOneScheduleQuery, useUpdateScheduleMutation } from '@/queries/useSchedule'
 import { GetAllScheduleResponse } from '@/types/responses/getAllSchedule.responses'
 import { useCreateRoomMutation } from '@/queries/useRoom'
 import { handleErrorApi, isCurrentDateTimeInRange } from '@/lib/utils'
 import { toast } from '@/hooks/use-toast'
-
+import moment from 'moment-timezone'
 interface EditScheduleProps {
   id: number | undefined
   onUpdate: () => void
@@ -42,7 +42,6 @@ export default function EditSchedule({ id, onUpdate }: EditScheduleProps) {
   const updateScheduleMutation = useUpdateScheduleMutation()
   const createRoomMutation = useCreateRoomMutation()
   const getAllScheduleMutation = useGetAllScheduleQuery()
-
   const form = useForm<UpdateScheduleReqBody>({
     resolver: zodResolver(UpdateScheduleBody),
     defaultValues: {
@@ -58,11 +57,21 @@ export default function EditSchedule({ id, onUpdate }: EditScheduleProps) {
   useEffect(() => {
     if (data) {
       const { name, startTime, endTime, room, description } = data.payload.data as GetAllScheduleResponse
+      const startTimeToLocale = moment(startTime).tz('Asia/Ho_Chi_Minh')
+      const endTimeToLocale = moment(endTime).tz('Asia/Ho_Chi_Minh')
       form.reset({
         name,
         roomId: room?.name ?? '',
-        startTime: startTime ? moment(startTime).format('YYYY-MM-DD HH:mm') : '',
-        endTime: endTime ? moment(endTime).format('YYYY-MM-DD HH:mm') : '',
+        startTime: startTime
+          ? moment(startTime)
+              .tz('Asia/Ho_Chi_Minh')
+              .format(`YYYY-MM-DD ${startTimeToLocale.hours() - 7}:mm`)
+          : '',
+        endTime: endTime
+          ? moment(endTime)
+              .tz('Asia/Ho_Chi_Minh')
+              .format(`YYYY-MM-DD ${endTimeToLocale.hours() - 7}:mm`)
+          : '',
         description
       })
     }
@@ -180,7 +189,7 @@ export default function EditSchedule({ id, onUpdate }: EditScheduleProps) {
                           id="startTime"
                           selected={field.value ? new Date(field.value) : new Date()}
                           onChange={(date: Date | null) =>
-                            date && field.onChange(moment(date).format('YYYY-MM-DD HH:mm'))
+                            date && field.onChange(moment(date).tz('Asia/Ho_Chi_Minh').format('YYYY-MM-DD HH:mm'))
                           }
                           showTimeSelect
                           placeholderText="Bắt đầu"
@@ -212,7 +221,7 @@ export default function EditSchedule({ id, onUpdate }: EditScheduleProps) {
                           id="endTime"
                           selected={field.value ? new Date(field.value) : new Date()}
                           onChange={(date: Date | null) =>
-                            date && field.onChange(moment(date).format('YYYY-MM-DD HH:mm'))
+                            date && field.onChange(moment(date).tz('Asia/Ho_Chi_Minh').format('YYYY-MM-DD HH:mm'))
                           }
                           showTimeSelect
                           placeholderText="Kết thúc"

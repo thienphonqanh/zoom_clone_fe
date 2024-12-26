@@ -12,8 +12,6 @@ export function middleware(request: NextRequest) {
   const isAuth = Boolean(request.cookies.get('accessToken')?.value)
   if (isAuth) {
     const { role } = getDecodedToken(request.cookies.get('accessToken')?.value as string)
-    console.log(role)
-
     if (pathname.startsWith('/admin') && role !== Role.Admin) {
       return NextResponse.redirect(new URL('/home', request.url))
     }
