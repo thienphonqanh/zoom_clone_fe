@@ -14,21 +14,6 @@ const menuItems = [
     title: 'Lịch trình',
     href: '/schedule',
     img: '/calendar.png'
-  },
-  {
-    title: 'Chat',
-    href: '/chat',
-    img: '/chat.png'
-  },
-  {
-    title: 'Bảng',
-    href: '/whiteboard',
-    img: '/whiteboard.png'
-  },
-  {
-    title: 'Tài liệu',
-    href: '/document',
-    img: '/doc.png'
   }
 ]
 
